@@ -7,6 +7,7 @@ Trait Model{
     protected $offset = 0;
     protected $order_column = 'id';
     protected $order_type = 'asc';
+    public $errors = [];
     
     public function findAll(){
 
@@ -55,9 +56,9 @@ Trait Model{
     public function insert($data){
         /** Remove unwanted data **/
         if(!empty($this->allowedColomns)){
-            foreach($data as $key => $value){
+            foreach($data as $key){
                 if(!in_array($key, $this->allowedColomns)){
-                    unset($data,$key);
+                    unset($data[$key]);
                 }
             }
         }
@@ -71,9 +72,9 @@ Trait Model{
     public function update($id, $data, $id_column = 'id'){
         /** Remove unwanted data **/
         if(!empty($this->allowedColomns)){
-            foreach($data as $key => $value){
+            foreach($data as $key){
                 if(!in_array($key, $this->allowedColomns)){
-                    unset($data,$key);
+                    unset($data[$key]);
                 }
             }
         }

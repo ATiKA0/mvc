@@ -2,12 +2,8 @@
 class Home extends Controller{
 
     public function index($a = "", $b = "", $c =""){
-
-        $this->view('home');
-    }
-
-    public function edit($a = "", $b = "", $c =""){
         
-        $this->view('home');
+        $data['username'] = empty($_SESSION['USER'])? 'User' :$_SESSION['USER']->email;
+        $this->view('home',$data);
     }
 }
