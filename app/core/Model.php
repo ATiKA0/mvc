@@ -5,6 +5,16 @@ Trait Model{
     use Database;
     protected $limit = 10;
     protected $offset = 0;
+    protected $order_column = 'id';
+    protected $order_type = 'asc';
+    
+    public function findAll(){
+
+        $query = "SELECT * FROM $this->table ORDER BY $this->order_column $this->order_type LIMIT $this->limit OFFSET $this->offset ";
+
+        return $this->query($query);
+    }
+    
     public function where($data, $data_not = []){
 
         $keys = array_keys($data);
@@ -43,6 +53,14 @@ Trait Model{
     }
 
     public function insert($data){
+        /** Remove unwanted data **/
+        if(!empty($this->allowedColomns)){
+            foreach($data as $key => $value){
+                if(!in_array($key, $this->allowedColomns)){
+                    unset($data,$key);
+                }
+            }
+        }
         $keys = array_keys($data);
         $query = "INSERT INTO $this->table (".implode(",",$keys).") VALUES (:".implode(",:",$keys).")";
        
@@ -51,6 +69,14 @@ Trait Model{
     }
 
     public function update($id, $data, $id_column = 'id'){
+        /** Remove unwanted data **/
+        if(!empty($this->allowedColomns)){
+            foreach($data as $key => $value){
+                if(!in_array($key, $this->allowedColomns)){
+                    unset($data,$key);
+                }
+            }
+        }
         $keys = array_keys($data);
         $query = "UPDATE $this->table SET ";
         foreach ($keys as $key){

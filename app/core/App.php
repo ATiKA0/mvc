@@ -6,13 +6,15 @@ class App{
     private $method = 'index';
     private function splitURL(){
         $URL = $_GET['url'] ?? 'home';
-        $URL = explode("/",$URL);
+        $URL = explode("/",trim($URL, "/"));
     
         return $URL;   
     }
     
     public function loadController(){
         $URL = $this->splitURL();
+
+        /**Select controller**/
         $filename = "../app/controllers/".ucfirst($URL[0]).".php";
         if(file_exists($filename)){
             require $filename;
@@ -22,8 +24,15 @@ class App{
             require "../app/controllers/_404.php";
             $this->controller = "_404";
         }
-
+        
         $controller = new $this->controller;
-        call_user_func_array([$controller,$this->method],[]);
+        /**Select method**/
+        if(!empty($URL[1])){
+            if(method_exists($controller, $URL[1])){
+                $this->method = $URL[1];
+            }
+        }
+        
+        call_user_func_array([$controller,$this->method], $URL);
     }
 }
